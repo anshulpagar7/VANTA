@@ -1,0 +1,14 @@
+# Every number here is a sensitivity-sweep axis, not a constant.
+# provenance: sourced | assumed  <- never leave this blank
+intervention_costs_paise:
+  send_nudge:             {value: 25,   provenance: assumed, note: "WhatsApp utility template, order-of-magnitude"}
+  send_payment_link:      {value: 25,   provenance: assumed}
+  retry_same_method:      {value: 0,    provenance: assumed, note: "no per-attempt fee in test mode"}
+  retry_alternate_method: {value: 0,    provenance: assumed}
+  schedule_retry:         {value: 0,    provenance: assumed}
+  escalate_human:         {value: 4000, provenance: assumed, note: "~3 min of agent time"}
+  abstain:                {value: 0,    provenance: sourced, note: "by definition"}
+
+customer_attention:
+  # Soft cost of spending a contact. Drives the contacts-per-recovery tradeoff.
+  cost_per_contact_paise: {value: 100, provenance: assumed}
