@@ -1,0 +1,35 @@
+[project]
+name = "vanta"
+version = "0.1.0"
+description = "VANTA - Verified Authority for Transaction Actions. An AI revenue recovery control plane with a frozen evaluation world."
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.7", "pyyaml>=6.0", "numpy>=1.26", "pandas>=2.2", "matplotlib>=3.8"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "hypothesis>=6.100", "ruff>=0.5"]
+
+[project.scripts]
+vanta = "vanta.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vanta"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# Pinned explicitly: ruff's default rule set shifts between releases, and a
+# lint config that changes under you makes CI non-reproducible.
+select = ["E", "F", "I", "B", "UP"]
+# UP042 (StrEnum) is deliberately not adopted: swapping `str, Enum` for StrEnum
+# changes f-string formatting of members, and the audit log and report render
+# these. Not a change to make days before a freeze.
+ignore = ["UP042"]
