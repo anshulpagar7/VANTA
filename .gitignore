@@ -1,0 +1,13 @@
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.sqlite3
+.env
+
+# Audit databases are regenerable and large; the HTML report is the artifact.
+results/**/audit.sqlite3
+
+# Holdout results stay unseeable until POLICIES_FROZEN exists.
+results/holdout/
