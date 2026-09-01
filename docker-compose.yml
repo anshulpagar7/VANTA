@@ -1,0 +1,12 @@
+services:
+  vanta:
+    build: .
+    volumes:
+      - ./results:/app/results
+      - ./data:/app/data
+    environment:
+      # Only needed for `vanta build-cache`. Replay runs need nothing.
+      - ANTHROPIC_API_KEY
+      - VANTA_LLM_BASE_URL
+      - VANTA_LLM_MODEL
+      - VANTA_LLM_API_KEY
