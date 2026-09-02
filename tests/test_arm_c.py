@@ -44,6 +44,49 @@ def test_live_provider_writes_through_to_cache(tmp_path):
     assert provider.calls == 1 and provider.hits == 1
 
 
+class _AlwaysFails:
+    name = "broken"
+
+    def diagnose_bucket(self, key):
+        raise RuntimeError("rate limited")
+
+
+def test_fallback_chain_uses_the_second_provider_when_the_first_fails(tmp_path):
+    from vanta.diagnosis.provider import FallbackChain
+    chain = FallbackChain([_AlwaysFails(), _StubProvider()])
+    cache = DiagnosisCache(tmp_path / "c.json")
+    provider = CachedProvider(cache=cache, source=chain)
+    key = "gateway_timeout|gateway|payment_authorization|card|small|first"
+    provider.diagnose(key)
+    assert cache.provider_of(key) == "stub"
+
+
+def test_cache_records_which_provider_served_each_bucket(tmp_path):
+    from vanta.diagnosis.provider import FallbackChain
+    cache = DiagnosisCache(tmp_path / "c.json")
+    provider = CachedProvider(cache=cache, source=FallbackChain([_StubProvider()]))
+    for slug in ("gateway_timeout", "invalid_otp"):
+        provider.diagnose(f"{slug}|gateway|payment_authorization|card|small|first")
+    assert cache.provider_mix() == {"stub": 2}
+
+
+def test_chain_raises_when_every_provider_fails(tmp_path):
+    from vanta.diagnosis.provider import FallbackChain
+    chain = FallbackChain([_AlwaysFails(), _AlwaysFails()])
+    provider = CachedProvider(cache=DiagnosisCache(tmp_path / "c.json"), source=chain)
+    with pytest.raises(RuntimeError, match="every provider failed"):
+        provider.diagnose("payment_failed|bank|payment_authorization|card|medium|first")
+
+
+def test_rules_fallback_is_off_by_default(tmp_path):
+    """A silent fall back to rules would make arm C secretly arm B+."""
+    provider = CachedProvider(cache=DiagnosisCache(tmp_path / "c.json"),
+                              source=_AlwaysFails())
+    with pytest.raises(RuntimeError):
+        provider.diagnose("payment_failed|bank|payment_authorization|card|medium|first")
+    assert provider.rules_fallbacks == 0
+
+
 def test_stub_output_never_reaches_the_committed_cache():
     """The stub is a test double, not a model. Numbers built on it are fiction."""
     if not DEFAULT_PATH.exists():
