@@ -133,6 +133,30 @@ def _by_slug(conn: sqlite3.Connection, arm: str) -> str:
             + body + "</table>")
 
 
+def _provider_mix_section() -> str:
+    """Arm C's diagnoses may come from more than one model if a fallback chain
+    was used. Stating the mix is not optional: an ensemble described as a
+    single model would misattribute the ablation result."""
+    try:
+        from vanta.diagnosis.cache import DiagnosisCache
+        mix = DiagnosisCache().provider_mix()
+    except Exception:
+        return ""
+    if not mix:
+        return ""
+    items = ", ".join(f"<code>{html.escape(k)}</code> {v}" for k, v in sorted(mix.items()))
+    warn = ""
+    if len([k for k in mix if k != "rules-fallback"]) > 1:
+        warn = ("<div class='warn'><b>Arm C is a mixed ensemble.</b> More than one "
+                "model produced these diagnoses, so C − B+ measures the blend, not "
+                "a single model.</div>")
+    if "rules-fallback" in mix:
+        warn += ("<div class='warn'><b>Some buckets fell back to rules-based "
+                 "diagnosis.</b> Those decisions are arm B+ logic wearing arm C's "
+                 "label and inflate the apparent similarity of the two arms.</div>")
+    return f"<h2>Diagnosis provenance</h2><p>{items}</p>{warn}"
+
+
 def _blocks(results: dict[str, list[RunStats]]) -> str:
     agg: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     for arm, runs in results.items():
@@ -212,6 +236,7 @@ def generate(
         "system working, not failing.</p>",
         "<h2>The ablation</h2>", _ablation(results),
         "<h2>Guardrail activity</h2>", _blocks(results),
+        _provider_mix_section(),
     ]
     if conn:
         parts += [
