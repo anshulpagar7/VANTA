@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import pathlib
 import sys
 
@@ -21,18 +22,49 @@ def _guard_holdout(suite: str) -> None:
         )
 
 
-def _provider(live: bool):
-    import os
+def _live_chain(gemini_model: str | None = None, grok_model: str | None = None):
+    """Build a fallback chain from whichever API keys are present.
 
+    Order is fixed and explicit so a build is reproducible: the same keys
+    always produce the same preference. Each bucket records which provider
+    actually answered.
+    """
+    from vanta.config import load_dotenv, present_keys, redact
     from vanta.diagnosis.provider import (
         AnthropicProvider,
-        CachedProvider,
-        OpenAICompatProvider,
+        FallbackChain,
+        gemini,
+        github_models,
+        grok,
     )
-    source = None
-    if live:
-        source = OpenAICompatProvider() if os.getenv("VANTA_LLM_BASE_URL") else AnthropicProvider()
-    return CachedProvider(source=source)
+
+    load_dotenv()
+    found = present_keys()
+    if found:
+        print("keys found: " + ", ".join(f"{k}={redact(os.environ[k])}" for k in found))
+
+    chain = []
+    if os.getenv("GEMINI_API_KEY"):
+        chain.append(gemini(gemini_model) if gemini_model else gemini())
+    if os.getenv("XAI_API_KEY"):
+        chain.append(grok(grok_model) if grok_model else grok())
+    if os.getenv("ANTHROPIC_API_KEY"):
+        chain.append(AnthropicProvider())
+    if os.getenv("GITHUB_TOKEN"):
+        chain.append(github_models())
+    if not chain:
+        sys.exit(
+            "no API key found. Set one of GEMINI_API_KEY, XAI_API_KEY, "
+            "ANTHROPIC_API_KEY or GITHUB_TOKEN in the environment, or copy "
+            ".env.example to .env and fill it in."
+        )
+    return FallbackChain(chain)
+
+
+def _provider(live: bool):
+    from vanta.diagnosis.provider import CachedProvider
+
+    return CachedProvider(source=_live_chain() if live else None)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -51,20 +83,22 @@ def main(argv: list[str] | None = None) -> None:
 
     bc = sub.add_parser("build-cache")
     bc.add_argument("--events", type=int, default=2000)
+    bc.add_argument("--gemini-model", default=None, help="override the Gemini model id")
+    bc.add_argument("--grok-model", default=None, help="override the Grok model id")
 
     args = ap.parse_args(argv)
 
     if args.cmd == "build-cache":
-        import os
-
-        from vanta.diagnosis.provider import AnthropicProvider, OpenAICompatProvider
         from vanta.eval.build_cache import build
-        src = OpenAICompatProvider() if os.getenv("VANTA_LLM_BASE_URL") else AnthropicProvider()
-        build(src, n_events=args.events)
+
+        chain = _live_chain(args.gemini_model, args.grok_model)
+        print("provider order: " + " -> ".join(p.name for p in chain.providers))
+        build(chain, n_events=args.events)
         return
 
     _guard_holdout(args.suite)
     from vanta.eval.harness import evaluate
+
     audit = args.audit or f"results/{args.suite}/audit.sqlite3"
     report = args.report or f"results/{args.suite}/report.html"
     pathlib.Path(audit).parent.mkdir(parents=True, exist_ok=True)
