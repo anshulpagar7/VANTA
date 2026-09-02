@@ -52,6 +52,15 @@ locale-dependent write would fail on one platform and not the other. CI runs
 both. Results are byte-identical across platforms because outcome draws are
 keyed with blake2b rather than Python's per-process salted `hash()`.
 
+## Arm C may be an ensemble
+
+Diagnosis can be built through a fallback chain across providers. Each cached
+bucket records which model answered it and the report prints the mix. If the
+cache is not served by a single model, `C - B+` measures a blend and must be
+described that way. Rules-based fallback is disabled by default, because a
+bucket silently diagnosed by rules would be arm B+ logic carrying arm C's
+label.
+
 ## Not built
 
 - Live Razorpay execution is an integration proof on the demo path only; it is
