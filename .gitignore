@@ -4,7 +4,11 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 *.sqlite3
+
+# Secrets. Never commit. A key in git history survives its own deletion.
 .env
+.env.local
+*.key
 
 # Audit databases are regenerable and large; the HTML report is the artifact.
 results/**/audit.sqlite3
