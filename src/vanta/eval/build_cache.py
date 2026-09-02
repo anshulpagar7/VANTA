@@ -51,5 +51,13 @@ def build(provider_source, n_events: int = 2000) -> DiagnosisCache:
             cache.save()
             print(f"  {i}/{len(keys)} buckets")
     cache.save()
+    mix = cache.provider_mix()
     print(f"cache built: {len(cache)} buckets, {cached.calls} live calls")
+    print("provider mix: " + ", ".join(f"{k} {v}" for k, v in sorted(mix.items())))
+    if len(mix) > 1:
+        print(
+            "NOTE: more than one provider served this cache. Arm C is a mixed\n"
+            "      ensemble, not a single model. Disclose the mix in the report\n"
+            "      and in LIMITATIONS rather than describing it as one LLM."
+        )
     return cache
