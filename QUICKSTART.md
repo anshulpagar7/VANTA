@@ -24,16 +24,31 @@ Results land in `./results` on the host.
 
 144 buckets, one model call each, once. Then it replays for free forever.
 
-    export ANTHROPIC_API_KEY=sk-...
+Copy `.env.example` to `.env` and fill in whichever keys you have. `.env` is
+gitignored. **Never paste a key into a source file** — this repository is
+public, and a key committed once remains in git history after it is deleted.
+
+    copy .env.example .env
+    notepad .env
+
     vanta build-cache
     git add data/diagnosis_cache.json
 
-Or any OpenAI-compatible free tier:
+`build-cache` assembles a fallback chain in a fixed order (Gemini, then Grok,
+then Anthropic, then GitHub Models) so a rate limit or outage mid-build does
+not lose the run. It prints which keys it found, redacted.
 
-    export VANTA_LLM_BASE_URL=https://models.inference.ai.azure.com
-    export VANTA_LLM_MODEL=gpt-4o-mini
-    export VANTA_LLM_API_KEY=...
-    vanta build-cache
+Model ids move. If a call 404s, override them:
+
+    vanta build-cache --gemini-model gemini-2.5-flash --grok-model grok-4.3
+
+Every bucket records which provider answered it, and the build prints the mix.
+**If more than one provider served the cache, arm C is a mixed ensemble, not a
+single model** — say so in the report rather than describing it as "the LLM".
+The report prints a warning automatically when it detects this.
+
+Falling back to rules-based diagnosis is OFF by default: it would make arm C
+secretly arm B+, which would make the ablation meaningless.
 
 Then the full four-arm run:
 
