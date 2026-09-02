@@ -4,11 +4,16 @@
 with no API key and no spend. A run that would need a live call in replay mode
 fails loudly rather than silently substituting a fallback -- a quietly
 degraded arm C would invalidate the whole comparison.
+
+Each entry records WHICH provider produced it. With a fallback chain, arm C
+can silently become a two-model ensemble; provenance makes that visible in the
+report instead of hidden in an average.
 """
 from __future__ import annotations
 
 import json
 import pathlib
+from collections import Counter
 
 from vanta.diagnosis.schema import Recommendation
 
@@ -30,11 +35,24 @@ class DiagnosisCache:
         return len(self._data)
 
     def get(self, key: str) -> Recommendation | None:
-        raw = self._data.get(key)
-        return Recommendation(**raw) if raw else None
+        entry = self._data.get(key)
+        if not entry:
+            return None
+        return Recommendation(**entry["recommendation"])
 
-    def put(self, key: str, rec: Recommendation) -> None:
-        self._data[key] = rec.model_dump(mode="json")
+    def provider_of(self, key: str) -> str | None:
+        entry = self._data.get(key)
+        return entry.get("provider") if entry else None
+
+    def provider_mix(self) -> dict[str, int]:
+        """How many buckets each provider produced. Reported, never averaged away."""
+        return dict(Counter(e.get("provider", "unknown") for e in self._data.values()))
+
+    def put(self, key: str, rec: Recommendation, provider: str = "unknown") -> None:
+        self._data[key] = {
+            "recommendation": rec.model_dump(mode="json"),
+            "provider": provider,
+        }
 
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
