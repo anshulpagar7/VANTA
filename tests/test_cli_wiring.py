@@ -17,7 +17,7 @@ def test_gemini_key_alone_builds_a_gemini_chain(monkeypatch):
         monkeypatch.delenv(var, raising=False)
     monkeypatch.setenv("GEMINI_API_KEY", "test-key")
     chain = _live_chain()
-    assert [p.name for p in chain.providers] == ["gemini:gemini-2.5-flash"]
+    assert [p.name for p in chain.providers] == ["gemini:gemini-3.6-flash"]
 
 
 def test_provider_order_is_gemini_then_grok(monkeypatch):
@@ -41,3 +41,18 @@ def test_no_keys_exits_with_a_useful_message(monkeypatch, tmp_path):
         monkeypatch.delenv(var, raising=False)
     with pytest.raises(SystemExit, match="no API key found"):
         _live_chain()
+
+
+def test_check_provider_accepts_groq_model_flag():
+    """Regression: --groq-model was on build-cache's parser but not
+    check-provider's, so the one-call debug path could not test the model
+    that build-cache would actually use."""
+    # argparse raising SystemExit(2) means "unrecognized arguments" -- the bug.
+    # A clean parse (which then fails later for lack of a real network) is fine.
+    import pytest
+
+    from vanta.cli import main as _main
+    with pytest.raises((SystemExit, Exception)) as exc_info:
+        _main(["check-provider", "--groq-model", "some-model"])
+    if isinstance(exc_info.value, SystemExit):
+        assert exc_info.value.code != 2

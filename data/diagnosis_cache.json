@@ -1,0 +1,1442 @@
+{
+ "card_declined|bank|payment_authorization|card|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.42,
+   "rationale": "Card declined at authorization, large amount, first attempt suggests possible insufficient funds; retry later may succeed.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.68,
+   "rationale": "Bank declined large, late attempt likely hard decline; customer must resolve or use different method, low chance of automatic recovery.",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.68,
+   "rationale": "Bank declined card, likely hard decline; alternate payment method may succeed",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.35,
+   "rationale": "Bank declined card; could be hard decline, insufficient funds or temporary issue; insufficient info to pinpoint.",
+   "recoverable": "unlikely",
+   "root_cause": "unknown",
+   "suggested_action": "abstain"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.62,
+   "rationale": "Bank declined during auth, likely hard decline; retries unlikely to succeed.",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "abstain"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.6,
+   "rationale": "Bank declined card at authorization, likely a hard decline; retrying same method unlikely to succeed.",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.35,
+   "rationale": "Bank declined card; could be hard decline or insufficient funds, ambiguous.",
+   "recoverable": "unknown",
+   "root_cause": "unknown",
+   "suggested_action": "abstain"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.68,
+   "rationale": "Bank declined during auth, typical of insufficient funds; a fresh payment link gives customer chance to add funds.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "card_declined|bank|payment_authorization|card|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.68,
+   "rationale": "Bank declined card at authorization; repeat attempts suggest hard decline, low chance of recovery via same method",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Customer left checkout without completing; unlikely to recover without prompting them to finish payment.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.95,
+   "rationale": "Customer left checkout without completing; unlikely to recover automatically, a gentle reminder may prompt completion.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.95,
+   "rationale": "Customer source and checkout step with abandoned reason indicates abandonment, not a technical failure.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Customer left checkout; a reminder nudge may prompt completion",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.94,
+   "rationale": "Customer left checkout; no payment attempt made. Nudge may prompt completion, but recovery odds are low.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.96,
+   "rationale": "Customer left checkout; no payment attempt made, so nudging is best chance, but recovery odds are low.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.95,
+   "rationale": "Customer left checkout without attempting payment; unlikely to recover without prompting",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Customer left checkout; unlikely to recover without prompting. A gentle nudge may encourage completion.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|card|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Customer left checkout; no payment attempt made, so nudging is best chance to re-engage.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Customer left checkout without completing; unlikely to recover without prompting them to finish payment.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.96,
+   "rationale": "Customer left checkout; unlikely to recover without prompting. A gentle reminder may re‑engage them.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Customer left checkout; a gentle reminder often re-engages and completes payment.",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Customer left checkout; no payment attempt made, so nudging is best chance to re-engage.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.94,
+   "rationale": "Customer left checkout; no payment attempt made. Nudging may re-engage, but recovery odds are low.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Customer left checkout; no payment attempt made. Nudging can prompt completion.",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Customer left checkout; no payment attempt made, so nudging is best chance, but recovery odds are low.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Customer left checkout without completing; indicates abandonment rather than technical failure.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "checkout_abandoned|customer|checkout|upi|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Customer left checkout; a gentle reminder often re-engages and completes the payment.",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway technical error suggests temporary issue; retrying netbanking now is likely to succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway technical error is temporary; retrying the same netbanking method should recover the payment.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway technical error suggests temporary issue; retrying after delay with same netbanking method is likely to succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway technical error suggests temporary issue; retrying same netbanking method soon is likely to succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway technical error suggests temporary issue; retrying later with same netbanking method is likely to succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway technical error suggests temporary issue; retrying same netbanking method usually recovers the payment.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway technical error at initiation suggests temporary issue; retrying same netbanking method should recover the payment.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway technical error is temporary; retrying the same netbanking method usually resolves the failure.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_technical_error|gateway|payment_initiation|netbanking|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway technical error suggests temporary issue; retrying after a short delay usually resolves it.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; retrying the same card payment soon is likely to succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; retrying later with same card method may succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout indicates temporary issue; retrying the same card method may succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; retrying the same card payment soon is likely to succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; scheduling a retry gives the gateway time to recover and likely captures the payment.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout indicates a temporary issue; retrying the card payment shortly usually succeeds.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; retrying the same card payment soon usually resolves the issue.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; scheduling a retry later usually resolves the failure.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|card|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout indicates a temporary issue; retrying the card payment shortly usually succeeds.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway timeout is temporary; retrying after a short delay usually resolves the failure.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Gateway timed out during authorization, typical transient issue; retry later likely succeeds.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway timeout suggests temporary issue; retrying after delay usually resolves",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; retrying same netbanking method on next attempt usually resolves",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.88,
+   "rationale": "Gateway timeout suggests temporary issue; retrying later via same netbanking method often succeeds.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; retrying the same netbanking method usually resolves the failure.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway timeout suggests temporary issue; retrying netbanking authorization is likely to succeed.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Gateway timeout is temporary; retrying after a short delay usually resolves the failure.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "gateway_timeout|gateway|payment_authorization|netbanking|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Gateway timeout is temporary; retrying after a short delay usually resolves the failure.",
+   "recoverable": "likely",
+   "root_cause": "transient_gateway",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank indicated insufficient funds; customer must add money before retrying",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank declined at authorization due to insufficient funds; customer must add money before retry",
+   "recoverable": "unlikely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank declined at authorization due to insufficient funds; prompt customer to add money before retrying.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank flagged insufficient funds at authorization; customer must add money before retrying",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank declined authorization due to insufficient funds; customer must add money before retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank declined at authorization due to insufficient funds; customer can add money and retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank reported insufficient funds; customer can add money and retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank declined at authorization due to insufficient funds; prompt customer to add money and retry.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|card|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank declined at authorization due to insufficient funds; customer can add money and retry payment",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank reported insufficient funds; customer must add money before retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank reported insufficient funds; customer can add money and retry via payment link",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank reported insufficient funds during authorization; customer must add money to account.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank reported insufficient funds; customer can add money and retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.88,
+   "rationale": "Bank reported insufficient funds during authorization; customer must add money to settle payment.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank declined at authorization due to insufficient funds; prompt customer to add money and retry.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank reported insufficient funds during authorization; customer can add money and retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Bank reported insufficient funds; late attempt lowers recovery odds; schedule a later retry.",
+   "recoverable": "unlikely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|emandate|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.95,
+   "rationale": "Bank reported insufficient funds; customer must add money before retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank reported insufficient funds; user can add money and retry via a UPI payment link.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Bank indicated insufficient funds; prompt customer to add money and retry payment",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "User lacks funds; prompting to add money or retry after funding usually resolves.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank reported insufficient funds; customer can add money and retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank indicated insufficient funds; customer can add money and retry payment",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank reported insufficient funds; customer must add money before retrying",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Bank reported insufficient funds during UPI authorization; user likely needs to add money and retry.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank reports insufficient funds; user can add money and retry via payment link.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "insufficient_funds|bank|payment_authorization|upi|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Bank reported insufficient funds; user can add money and retry",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Customer entered wrong OTP during card authentication; retry same method with correct OTP.",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Invalid OTP indicates authentication error; customer can retry OTP entry",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Customer entered wrong OTP during card authentication; prompting a retry of the same method should resolve.",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Customer entered an incorrect OTP during card authentication; retrying the same method should resolve the issue.",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Customer entered wrong OTP; re‑authentication can succeed if they try again",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Invalid OTP indicates authentication failure; customer can retry same card payment with correct OTP",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.86,
+   "rationale": "Customer entered wrong OTP during authentication; retrying the same card method should resolve the failure.",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Customer entered wrong OTP during card authentication; retrying OTP can recover the payment.",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invalid_otp|customer|payment_authentication|card|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Customer entered wrong OTP during authentication; retrying same method should resolve",
+   "recoverable": "likely",
+   "root_cause": "auth_failure",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Invoice is past due; customer must be prompted to pay via a new link.",
+   "recoverable": "likely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Invoice past due caused failure; customer must be prompted to pay again",
+   "recoverable": "unlikely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.85,
+   "rationale": "Invoice overdue suggests non‑payment; sending a payment link gives the customer a direct way to settle.",
+   "recoverable": "likely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Invoice overdue blocks payment; sending a payment link lets customer settle promptly",
+   "recoverable": "likely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Invoice past due; failure stems from overdue status, not gateway or method issues",
+   "recoverable": "unlikely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Invoice overdue indicates payment after due date; sending a payment link can recover the funds.",
+   "recoverable": "likely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Invoice overdue blocks payment; a fresh payment link can prompt the customer to settle promptly.",
+   "recoverable": "likely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Invoice overdue shows unpaid invoice; sending a payment link nudges the customer to settle the amount.",
+   "recoverable": "likely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "invoice_overdue|business|invoice_due|netbanking|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Invoice overdue; prompting customer with a payment link is the best chance to recover the outstanding amount.",
+   "recoverable": "likely",
+   "root_cause": "invoice_overdue",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Mandate revoked shows customer cancelled; recover by sending new payment link to re‑authorize",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Mandate revoked; need customer to re‑authorize via new eMandate link to recover payment.",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Mandate revoked; payment can be recovered by obtaining new customer authorization via a payment link.",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Mandate revoked by customer; need new authorization via payment link to recover funds.",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Mandate revoked; customer must re‑authorize. Sending a payment link to recreate the mandate offers best chance to recover.",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Mandate revoked by customer; request new authorization via payment link.",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Mandate revoked by customer; need new authorization to recover payment.",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Mandate revoked; requires customer re‑authorization, automatic retry unlikely to succeed",
+   "recoverable": "unlikely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "mandate_revoked|customer|mandate_debit|emandate|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.93,
+   "rationale": "Mandate revoked; payment can be recovered by obtaining new authorization via a payment link.",
+   "recoverable": "likely",
+   "root_cause": "mandate_revoked",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.95,
+   "rationale": "Wallet not supported for this merchant; suggest using a supported payment method.",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported for large, late payments; switch to a supported method",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported for large repeat payments; suggest using a supported method like card or netbanking.",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported at initiation; use a supported payment method to recover",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported for this transaction; advise customer to use a supported payment method.",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported for this merchant; use a supported method like card or netbanking.",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported for this merchant; try another payment method",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported for this merchant; try another payment method",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "method_unsupported|business|payment_initiation|wallet|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.92,
+   "rationale": "Wallet not supported for business‑initiated payments; switch to a supported method like card or netbanking.",
+   "recoverable": "likely",
+   "root_cause": "method_unsupported",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.32,
+   "rationale": "Bank source and generic failure give no clear cause; cannot determine if retry or other action would help.",
+   "recoverable": "unknown",
+   "root_cause": "unknown",
+   "suggested_action": "abstain"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.45,
+   "rationale": "Bank auth failure on large, late card payment suggests hard decline, possibly insufficient funds",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.45,
+   "rationale": "Bank declined at authorization; repeat large attempts suggest hard decline, low chance of recovery via same method",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.6,
+   "rationale": "Bank declined at authorization, likely a soft decline (e.g., insufficient funds) on first attempt.",
+   "recoverable": "likely",
+   "root_cause": "issuer_soft_decline",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.45,
+   "rationale": "Bank declined at authorization, likely hard decline after retries; low chance of recovery with same method",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.65,
+   "rationale": "Bank declined at authorization, likely a hard decline such as insufficient funds or blocked card.",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.65,
+   "rationale": "Bank declined at auth; soft decline common for first small attempt, retry may succeed",
+   "recoverable": "likely",
+   "root_cause": "issuer_soft_decline",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.65,
+   "rationale": "Bank declined authorization at payment step; likely hard decline, retry unlikely to succeed",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "payment_failed|bank|payment_authorization|card|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.45,
+   "rationale": "Bank declined repeatedly; likely hard decline. Low confidence; alternate method may succeed.",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.66,
+   "rationale": "Bank declined at authorization, likely due to insufficient funds for large UPI transaction.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.6,
+   "rationale": "Large, late UPI payment likely failed due to insufficient balance; recovery requires customer action",
+   "recoverable": "unlikely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.55,
+   "rationale": "Bank declined payment at authorization; repeat large UPI attempt suggests hard decline, low chance of success on retry same method",
+   "recoverable": "unlikely",
+   "root_cause": "issuer_hard_decline",
+   "suggested_action": "retry_alternate_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.65,
+   "rationale": "Bank declined at authorization, typical of insufficient UPI balance on first attempt.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.65,
+   "rationale": "Bank declined at authorization, typical of insufficient UPI balance; nudging user to add funds may recover payment.",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.68,
+   "rationale": "Bank declined during authorization, common for UPI when balance is insufficient",
+   "recoverable": "likely",
+   "root_cause": "insufficient_funds",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.6,
+   "rationale": "Bank declined at authorization; soft decline common for first‑time UPI, often resolves on immediate retry.",
+   "recoverable": "likely",
+   "root_cause": "issuer_soft_decline",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.55,
+   "rationale": "Bank declined temporarily; retry later may succeed",
+   "recoverable": "likely",
+   "root_cause": "issuer_soft_decline",
+   "suggested_action": "schedule_retry"
+  }
+ },
+ "payment_failed|bank|payment_authorization|upi|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.55,
+   "rationale": "Bank declined at authorization; soft declines often resolve on retry, especially for small UPI payments.",
+   "recoverable": "likely",
+   "root_cause": "issuer_soft_decline",
+   "suggested_action": "retry_same_method"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|large|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.65,
+   "rationale": "Timeout during UPI auth suggests user didn't complete flow; nudging may prompt completion.",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|large|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Customer timed out on UPI auth, large late payment suggests abandonment; low chance of automatic recovery",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|large|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Timeout in UPI auth indicates customer didn't finish; resend link to recover",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_payment_link"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|medium|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.68,
+   "rationale": "Timeout during UPI auth suggests the customer did not complete verification, making recovery unlikely without prompting them again.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|medium|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.71,
+   "rationale": "Customer timed out during UPI authentication, indicating they likely abandoned the flow.",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|medium|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Customer timed out during UPI authentication; prompting them can recover the payment.",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|small|first": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Timeout at UPI auth indicates customer didn't finish; likely abandonment; a gentle nudge may prompt retry.",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|small|late": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Customer timed out during UPI authentication, indicating likely abandonment",
+   "recoverable": "unlikely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_nudge"
+  }
+ },
+ "payment_timeout|customer|payment_authentication|upi|small|repeat": {
+  "provider": "groq:openai/gpt-oss-120b",
+  "recommendation": {
+   "confidence": 0.78,
+   "rationale": "Timeout during UPI auth suggests the user didn’t complete the flow; prompting with a fresh payment link can recover the amount.",
+   "recoverable": "likely",
+   "root_cause": "customer_abandoned",
+   "suggested_action": "send_payment_link"
+  }
+ }
+}

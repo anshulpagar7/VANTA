@@ -16,6 +16,10 @@ from __future__ import annotations
 
 import json
 import os
+import random
+import re
+import time
+import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
 from typing import Protocol
@@ -24,6 +28,11 @@ from vanta.diagnosis.cache import CacheMiss, DiagnosisCache
 from vanta.diagnosis.deterministic import diagnose as rules_diagnose
 from vanta.diagnosis.schema import Recommendation
 from vanta.types import ActionKind, Recoverability, RootCause
+
+# Some providers sit behind Cloudflare, which fingerprints and blocks the
+# default urllib User-Agent (bare "Python-urllib/3.x") as a bot -- surfacing
+# as an opaque Cloudflare 403 (error code 1010), not a provider auth error.
+DEFAULT_HEADERS = {"user-agent": "vanta-benchmark/0.1 (+https://github.com)"}
 
 SYSTEM_PROMPT = """You triage failed payment events for an Indian payment gateway.
 Given a payment failure described by Razorpay's error axes (source, step, reason)
@@ -47,6 +56,86 @@ recovery does not justify contacting the customer.""".format(
 
 class LiveProvider(Protocol):
     def diagnose_bucket(self, key: str) -> Recommendation: ...
+
+
+class ProviderError(RuntimeError):
+    """Carries the provider's response body, which is where the real reason is."""
+
+
+# Transient: the provider is fine, it is just busy or throttling us.
+RETRYABLE_STATUS = frozenset({408, 429, 500, 502, 503, 504})
+MAX_ATTEMPTS = 8
+
+# Free tiers are quota-limited per minute. Pacing requests below the limit is
+# cheaper than discovering it: a 429 costs a call AND a wait, and on a 144
+# bucket build that compounds into an aborted run.
+DEFAULT_MIN_INTERVAL_S = 3.5
+
+_RETRY_AFTER = re.compile(r"retry in ([0-9.]+)s", re.I)
+
+
+class _Throttle:
+    """Minimum spacing between calls to one provider."""
+
+    def __init__(self, min_interval: float = DEFAULT_MIN_INTERVAL_S) -> None:
+        self.min_interval = min_interval
+        self._last = 0.0
+
+    def wait(self, sleep=time.sleep) -> None:
+        gap = time.monotonic() - self._last
+        if self._last and gap < self.min_interval:
+            sleep(self.min_interval - gap)
+        self._last = time.monotonic()
+
+
+def _post(req: urllib.request.Request, provider: str, *,
+          max_attempts: int = MAX_ATTEMPTS, sleep=time.sleep,
+          throttle: _Throttle | None = None) -> dict:
+    """POST with exponential backoff on transient failures.
+
+    A 144-bucket build will meet a 429 or a 503 sooner or later. Aborting the
+    whole run on one of them wastes every call already made, so transient
+    statuses are retried with jitter and only a persistent failure is raised.
+    """
+    delay = 2.0
+    last: Exception | None = None
+    for attempt in range(1, max_attempts + 1):
+        if throttle is not None:
+            throttle.wait(sleep)
+        try:
+            with urllib.request.urlopen(req, timeout=90) as resp:
+                return json.loads(resp.read())
+        except urllib.error.HTTPError as exc:
+            body = exc.read().decode("utf-8", "replace")[:600]
+            last = ProviderError(f"{provider} HTTP {exc.code}: {body}")
+            if exc.code not in RETRYABLE_STATUS or attempt == max_attempts:
+                raise last from exc
+            # Providers often state exactly how long to wait. Believe them:
+            # guessing shorter just burns another call against the quota.
+            stated = _RETRY_AFTER.search(body)
+            wait = float(stated.group(1)) + 1.0 if stated else (
+                delay + random.uniform(0, delay / 2))
+            print(f"    {provider} HTTP {exc.code}, retry {attempt}/{max_attempts - 1} "
+                  f"in {wait:.0f}s")
+            sleep(wait)
+            delay = min(delay * 2, 60.0)
+        except urllib.error.URLError as exc:
+            last = ProviderError(f"{provider} network error: {exc.reason}")
+            if attempt == max_attempts:
+                raise last from exc
+            sleep(delay)
+            delay = min(delay * 2, 60.0)
+    raise last  # pragma: no cover
+
+
+def list_models(base_url: str, api_key_env: str) -> list[str]:
+    """Ask an OpenAI-compatible endpoint what model ids it will accept."""
+    req = urllib.request.Request(
+        f"{base_url.rstrip('/')}/models",
+        headers={**DEFAULT_HEADERS, "authorization": f"Bearer {os.environ[api_key_env]}"},
+    )
+    payload = _post(req, "models-list")
+    return sorted(m.get("id", "?") for m in payload.get("data", []))
 
 
 def _strip_fences(text: str) -> str:
@@ -80,12 +169,11 @@ class AnthropicProvider:
         }).encode()
         req = urllib.request.Request(
             self.url, data=body,
-            headers={"content-type": "application/json",
+            headers={**DEFAULT_HEADERS, "content-type": "application/json",
                      "x-api-key": os.environ["ANTHROPIC_API_KEY"],
                      "anthropic-version": "2023-06-01"},
         )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            payload = json.loads(resp.read())
+        payload = _post(req, self.name)
         text = "".join(b.get("text", "") for b in payload["content"])
         return Recommendation(**json.loads(_strip_fences(text)))
 
@@ -101,6 +189,11 @@ class OpenAICompatProvider:
     base_url: str
     model: str
     api_key_env: str
+    min_interval_s: float = DEFAULT_MIN_INTERVAL_S
+    _throttle: _Throttle | None = None
+
+    def __post_init__(self) -> None:
+        self._throttle = _Throttle(self.min_interval_s)
 
     def diagnose_bucket(self, key: str) -> Recommendation:
         body = json.dumps({
@@ -110,30 +203,94 @@ class OpenAICompatProvider:
                 {"role": "user", "content": _bucket_to_prompt(key)},
             ],
             "temperature": 0,
+            "response_format": {"type": "json_object"},
         }).encode()
         req = urllib.request.Request(
             f"{self.base_url.rstrip('/')}/chat/completions", data=body,
-            headers={"content-type": "application/json",
+            headers={**DEFAULT_HEADERS, "content-type": "application/json",
                      "authorization": f"Bearer {os.environ[self.api_key_env]}"},
         )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            payload = json.loads(resp.read())
+        payload = _post(req, self.name, throttle=self._throttle)
         text = payload["choices"][0]["message"]["content"]
         return Recommendation(**json.loads(_strip_fences(text)))
 
 
-def gemini(model: str = "gemini-2.5-flash") -> OpenAICompatProvider:
-    return OpenAICompatProvider(
-        name=f"gemini:{model}",
-        base_url="https://generativelanguage.googleapis.com/v1beta/openai",
-        model=model, api_key_env="GEMINI_API_KEY",
-    )
+@dataclass
+class GeminiNativeProvider:
+    """Google's own generateContent endpoint.
+
+    Used in preference to Google's OpenAI-compatibility shim, which returned
+    404 in practice. Native also supports responseMimeType=application/json,
+    so the model is constrained to emit JSON rather than asked politely.
+    """
+    name: str = "gemini"
+    model: str = "gemini-3.6-flash"
+    base_url: str = "https://generativelanguage.googleapis.com/v1beta"
+    api_key_env: str = "GEMINI_API_KEY"
+    min_interval_s: float = DEFAULT_MIN_INTERVAL_S
+    _throttle: _Throttle | None = None
+
+    def __post_init__(self) -> None:
+        self._throttle = _Throttle(self.min_interval_s)
+
+    def diagnose_bucket(self, key: str) -> Recommendation:
+        url = f"{self.base_url}/models/{self.model}:generateContent"
+        body = json.dumps({
+            "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+            "contents": [{"role": "user", "parts": [{"text": _bucket_to_prompt(key)}]}],
+            "generationConfig": {
+                "temperature": 0,
+                "responseMimeType": "application/json",
+                "maxOutputTokens": 2048,
+            },
+        }).encode()
+        req = urllib.request.Request(
+            url, data=body,
+            headers={**DEFAULT_HEADERS, "content-type": "application/json",
+                     "x-goog-api-key": os.environ[self.api_key_env]},
+        )
+        payload = _post(req, self.name, throttle=self._throttle)
+        try:
+            parts = payload["candidates"][0]["content"]["parts"]
+            text = "".join(p.get("text", "") for p in parts)
+        except (KeyError, IndexError) as exc:
+            raise ProviderError(
+                f"{self.name}: unexpected response shape: {json.dumps(payload)[:400]}"
+            ) from exc
+        if not text.strip():
+            raise ProviderError(f"{self.name}: empty response: {json.dumps(payload)[:400]}")
+        return Recommendation(**json.loads(_strip_fences(text)))
+
+
+def gemini(model: str | None = None,
+           min_interval_s: float = DEFAULT_MIN_INTERVAL_S) -> GeminiNativeProvider:
+    m = model or GeminiNativeProvider.model
+    return GeminiNativeProvider(name=f"gemini:{m}", model=m,
+                                min_interval_s=min_interval_s)
 
 
 def grok(model: str = "grok-4.3") -> OpenAICompatProvider:
     return OpenAICompatProvider(
         name=f"grok:{model}", base_url="https://api.x.ai/v1",
         model=model, api_key_env="XAI_API_KEY",
+    )
+
+
+def groq(model: str = "llama-3.3-70b-versatile",
+         min_interval_s: float = 2.5) -> OpenAICompatProvider:
+    """Groq (not Grok). Free tier, OpenAI-compatible, very fast."""
+    return OpenAICompatProvider(
+        name=f"groq:{model}", base_url="https://api.groq.com/openai/v1",
+        model=model, api_key_env="GROQ_API_KEY", min_interval_s=min_interval_s,
+    )
+
+
+def openrouter(model: str = "meta-llama/llama-3.3-70b-instruct:free",
+               min_interval_s: float = 3.0) -> OpenAICompatProvider:
+    """OpenRouter. Models suffixed ':free' cost nothing."""
+    return OpenAICompatProvider(
+        name=f"openrouter:{model}", base_url="https://openrouter.ai/api/v1",
+        model=model, api_key_env="OPENROUTER_API_KEY", min_interval_s=min_interval_s,
     )
 
 
@@ -173,11 +330,11 @@ class FallbackChain:
                 self._last = provider.name
                 return rec
             except Exception as exc:  # noqa: BLE001 - any provider failure falls through
-                self.errors.setdefault(provider.name, []).append(f"{type(exc).__name__}")
+                self.errors.setdefault(provider.name, []).append(str(exc)[:400])
                 last_exc = exc
+        detail = "\n".join(f"  {k}: {v[-1]}" for k, v in self.errors.items())
         raise RuntimeError(
-            f"every provider failed for bucket {key!r}: "
-            + "; ".join(f"{k} x{len(v)}" for k, v in self.errors.items())
+            f"every provider failed for bucket {key!r}:\n{detail}"
         ) from last_exc
 
 

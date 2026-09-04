@@ -45,11 +45,23 @@ def build(provider_source, n_events: int = 2000) -> DiagnosisCache:
     cache = DiagnosisCache()
     cached = CachedProvider(cache=cache, source=provider_source)
     keys = enumerate_buckets(DEV_SEEDS, n_events)
-    for i, key in enumerate(keys, 1):
-        cached.diagnose(key)
-        if i % 25 == 0:
+    todo = [k for k in keys if cache.get(k) is None]
+    if len(todo) < len(keys):
+        print(f"resuming: {len(keys) - len(todo)} buckets already cached")
+
+    for i, key in enumerate(todo, 1):
+        try:
+            cached.diagnose(key)
+        except Exception:
+            # Persist what we have so a re-run resumes instead of restarting.
             cache.save()
-            print(f"  {i}/{len(keys)} buckets")
+            print(f"\naborted after {i - 1}/{len(todo)} new buckets; "
+                  f"{len(cache)} cached in total.")
+            print("re-run the same command to resume from here.")
+            raise
+        if i % 10 == 0:
+            cache.save()
+            print(f"  {i}/{len(todo)} buckets")
     cache.save()
     mix = cache.provider_mix()
     print(f"cache built: {len(cache)} buckets, {cached.calls} live calls")

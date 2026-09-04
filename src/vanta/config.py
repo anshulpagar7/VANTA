@@ -11,7 +11,10 @@ import pathlib
 
 ENV_FILE = pathlib.Path(".env")
 
-KEY_VARS = ("GEMINI_API_KEY", "XAI_API_KEY", "ANTHROPIC_API_KEY", "GITHUB_TOKEN")
+KEY_VARS = (
+    "GEMINI_API_KEY", "GROQ_API_KEY", "OPENROUTER_API_KEY",
+    "XAI_API_KEY", "ANTHROPIC_API_KEY", "GITHUB_TOKEN",
+)
 
 
 def load_dotenv(path: pathlib.Path = ENV_FILE) -> int:

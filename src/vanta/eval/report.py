@@ -96,6 +96,21 @@ def _headline_table(results: dict[str, list[RunStats]]) -> str:
     )
 
 
+def _paired_delta_ci(a_runs: list[RunStats], b_runs: list[RunStats]) -> tuple[float, float, int]:
+    """Per-seed (b - a), mean and 95% CI of that paired difference.
+
+    a_runs and b_runs come from the SAME seeds in the SAME order (common
+    random numbers: each seed drives an identical simulated world for every
+    arm). The paired difference is the statistically correct comparison here
+    -- far tighter than comparing two arms' own marginal CIs, which can look
+    like noise even when the paired effect is real, or vice versa.
+    """
+    diffs = [float(b.recovered_paise - a.recovered_paise)
+             for a, b in zip(a_runs, b_runs, strict=True)]
+    n = len(diffs)
+    return mean(diffs), (_ci95(diffs) if n > 1 else 0.0), n
+
+
 def _ablation(results: dict[str, list[RunStats]]) -> str:
     b, c = results.get("Bplus_vanta_norag"), results.get("C_vanta")
     if not (b and c):
@@ -105,14 +120,30 @@ def _ablation(results: dict[str, list[RunStats]]) -> str:
     bm = mean(r.recovered_paise for r in b)
     cm = mean(r.recovered_paise for r in c)
     delta, pct = cm - bm, (cm - bm) / bm if bm else 0
-    verdict = ("the LLM earns its place" if delta > 0 else
-               "the deterministic map matches or beats the LLM on this task")
+
+    pm, pci, n = _paired_delta_ci(b, c)
+    # A sign-only verdict is not a statistical claim. Require the paired
+    # effect to clear its own confidence interval before calling it real.
+    significant = n > 1 and abs(pm) > pci
+
+    if significant:
+        verdict = ("the LLM earns its place" if pm > 0 else
+                   "the deterministic map beats the LLM on this task")
+        note = (f"This is distinguishable from zero across these {n} seeds "
+                f"(paired 95% CI ±{_rupees(pci)}).")
+    else:
+        verdict = "the LLM's contribution is not distinguishable from noise at this sample size"
+        note = (f"The paired 95% CI (±{_rupees(pci)}) includes zero across only {n} seeds. "
+                f"More seeds, or the holdout run, would be needed to resolve this precisely "
+                f"— do not read the point estimate above as a settled result.")
+
     return (
         f"<p class='delta'>C − B+ = {_rupees(delta)} ({pct:+.1%})</p>"
         f"<p>Both arms run identical scoring, candidates, scheduling and abstention "
-        f"logic. The only difference is where the diagnosis comes from, so this "
-        f"number is the language model's isolated contribution — on these seeds, "
-        f"<b>{verdict}</b>.</p>"
+        f"logic on the SAME seeds (common random numbers: each seed drives an "
+        f"identical simulated world for every arm), so this isolates the language "
+        f"model's contribution. {note}</p>"
+        f"<p><b>{verdict}</b>.</p>"
     )
 
 
