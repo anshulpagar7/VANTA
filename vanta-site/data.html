@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data — VANTA</title>
+<meta name="description" content="The frozen world, the event generator, the diagnosis cache and the append-only audit database.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="top"><div class="wrap"><a class="brand" href="index.html">VANTA</a><div class="links"><a href="index.html">Overview</a><a href="problem.html">The problem</a><a href="approach.html">Approach</a><a href="data.html" aria-current="page">Data</a><a href="results.html">Results</a><a href="honesty.html">Honesty</a></div></div></nav>
+<div class="wrap phead">
+  <div class="kicker">03 — Data</div>
+  <h1>A world nobody could tune against.</h1>
+  <p class="lede">Outcome probabilities were authored before any policy existed, and policy code is forbidden from reading them. That constraint is what makes the numbers worth anything.</p>
+</div>
+
+<section>
+  <div class="wrap reveal">
+    <h2>The failure taxonomy is Razorpay's own</h2>
+    <p>Razorpay's error object exposes <code>source</code>, <code>step</code> and <code>reason</code> alongside a code and description. VANTA's events are generated on those same three axes, so the simulator speaks the same language as the real API and the vocabulary is not invented.</p>
+    <div class="scroller">
+      <table>
+        <tr><th>Reason slug</th><th>Source</th><th>Step</th><th class="n">Share of batch</th></tr>
+        <tr><td class="mono">payment_failed</td><td>bank</td><td>authorization</td><td class="n">22%</td></tr>
+        <tr><td class="mono">checkout_abandoned</td><td>customer</td><td>checkout</td><td class="n">14%</td></tr>
+        <tr><td class="mono">insufficient_funds</td><td>bank</td><td>authorization</td><td class="n">12%</td></tr>
+        <tr><td class="mono">gateway_timeout</td><td>gateway</td><td>authorization</td><td class="n">10%</td></tr>
+        <tr><td class="mono">invalid_otp</td><td>customer</td><td>authentication</td><td class="n">8%</td></tr>
+        <tr><td class="mono">card_declined</td><td>bank</td><td>authorization</td><td class="n">8%</td></tr>
+        <tr><td class="mono">payment_timeout</td><td>customer</td><td>authentication</td><td class="n">7%</td></tr>
+        <tr><td class="mono">invoice_overdue</td><td>business</td><td>invoice due</td><td class="n">6%</td></tr>
+        <tr><td class="mono">mandate_revoked</td><td>customer</td><td>mandate debit</td><td class="n">5%</td></tr>
+        <tr><td class="mono">gateway_technical_error</td><td>gateway</td><td>initiation</td><td class="n">5%</td></tr>
+        <tr><td class="mono">method_unsupported</td><td>business</td><td>initiation</td><td class="n">3%</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Ambiguity is the point</h2>
+    <p>The error slug deliberately does <em>not</em> determine the true cause. <code>payment_failed</code> splits across four different root causes; <code>card_declined</code> splits between a hard and a soft decline. The true cause is hidden ground truth that no policy can read.</p>
+    <pre><span class="c"># world/params.py — frozen before any policy existed</span>
+<span class="m">"payment_failed"</span>: {
+    ISSUER_SOFT_DECLINE: 0.40,
+    INSUFFICIENT_FUNDS:  0.30,
+    ISSUER_HARD_DECLINE: 0.20,
+    TRANSIENT_GATEWAY:   0.10,
+}</pre>
+    <p class="small">Without that ambiguity, diagnosis would be a lookup and a language model would have nothing to contribute. With it, diagnosis is a genuine judgement call — and, as the results show, that is precisely where the model earns its place.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>How an outcome is decided</h2>
+    <p>Four factors multiply: how recoverable the true cause is at all, how well the chosen action fits that cause, how much the attempt has decayed, and whether the timing is right. Each customer also carries a hidden responsiveness draw that no policy can see — without it, perfect play would exist, and a benchmark where perfect play exists measures nothing.</p>
+    <pre>p = base_recoverability[cause]
+  × action_fit[cause][action]
+  × attempt_decay(attempt_no)      <span class="c"># 1.00, 0.62, 0.38, 0.22, 0.12</span>
+  × timing_multiplier(hours)       <span class="c"># peaks near +24h</span>
+  × customer_responsiveness        <span class="c"># hidden</span></pre>
+    <div class="note">
+      <p class="small" style="margin:0"><strong>Every arm faces an identical world.</strong> Random draws are keyed on <code>(seed, event_id, attempt_no, action)</code> with blake2b, never a shared stream. Policies make different numbers of calls in different orders; a shared stream would hand each arm a different sequence of luck and the comparison would be meaningless. Results are bit-identical across Linux and Windows.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>The audit database</h2>
+    <p>Every decision — authorized, blocked, abstained, review-required — is one row. Append-only is enforced by the database itself, not by convention.</p>
+    <pre><span class="k">CREATE TRIGGER</span> audit_no_update <span class="k">BEFORE UPDATE ON</span> audit
+<span class="k">BEGIN</span> <span class="k">SELECT</span> <span class="r">RAISE(ABORT, 'audit log is append-only')</span>; <span class="k">END</span>;</pre>
+    <div class="grid3" style="margin-top:30px">
+      <div class="fact"><div class="n num">20</div><div class="l">columns per decision, including the diagnosed cause, the confidence, the block reason and the world's own probability trace</div></div>
+      <div class="fact"><div class="n num">2</div><div class="l">triggers rejecting UPDATE and DELETE, with two tests that try and are refused</div></div>
+      <div class="fact"><div class="n num">144</div><div class="l">diagnosis buckets, cached once and committed, so anyone reproduces the model arm with no API key</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Development and holdout</h2>
+    <p>Seeds 11–15 were used to build and tune the policies. Seeds 101–105 were never touched until the policies were frozen, committed and tagged. The holdout command refuses to run at all unless that freeze marker exists.</p>
+    <pre><span class="k">$</span> vanta evaluate --suite holdout --no-llm
+<span class="r">refusing to run holdout: POLICIES_FROZEN marker absent.</span>
+<span class="c">Freeze the policies first (ADR-003). One shot, no re-tuning.</span></pre>
+    <p class="small dim">One holdout run, by design. Had the numbers disappointed, they would still be the numbers on the next page.</p>
+  </div>
+</section>
+<div class="wrap"><div class="pager"><a href="approach.html"><span class="lbl">Previous</span>Approach</a><a href="results.html" style="text-align:right"><span class="lbl">Next</span>Results</a></div></div><footer><div class="wrap">Held-out suite &middot; seeds 101&ndash;105 &middot; 1,000 events per seed &middot; diagnosis cache built once from openai/gpt-oss-120b via Groq &middot; replayable with no API key &middot; 80 tests</div></footer><script src="assets/site.js"></script>
+</body>
+</html>
