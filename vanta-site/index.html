@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VANTA — a benchmark for agentic revenue recovery</title>
+<meta name="description" content="Four recovery policies, a frozen simulated world, a held-out seed suite, and an authority boundary a language model cannot cross.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div id="pre">
+  <div class="prow"><span>VANTA</span><span>LOADING</span></div>
+  <div class="pnum" id="pnum">000</div>
+  <div class="ptrack"><i id="pbar"></i></div>
+</div>
+<div class="curtain"></div>
+
+<div class="cur" aria-hidden="true"></div>
+<div class="curDot" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="sprog" aria-hidden="true"></div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="hud" aria-hidden="true">
+  <div class="hudline" id="hudForm">payment instrument</div>
+  <div class="hudtrack"><i id="hudBar"></i></div>
+</div>
+<div class="legend" aria-hidden="true">
+  <span><i class="lg-gold"></i>RECOVERED 46.1%</span>
+  <span><i class="lg-slate"></i>UNRESOLVED</span>
+</div>
+
+<nav class="top"><div class="wrap">
+  <a class="brand" href="#top">VANTA</a>
+  <div class="links">
+    <a href="#problem">Problem</a><a href="#approach">Approach</a><a href="#authority">Authority</a>
+    <a href="#data">Data</a><a href="#results">Results</a><a href="#proof">Proof</a><a href="#honesty">Honesty</a>
+  </div>
+</div></nav>
+
+<main>
+<section class="hero" id="top">
+  <div class="wrap"><div class="col">
+    <div class="eyebrow fade" style="opacity:0;transform:translateY(14px)">VERIFIED AUTHORITY FOR TRANSACTION ACTIONS</div>
+    <h1>
+      <span class="line"><span>Recovering</span></span>
+      <span class="line"><span>revenue is easy</span></span>
+      <span class="line"><span>to claim. Hard</span></span>
+      <span class="line"><span>to prove.</span></span>
+    </h1>
+    <p class="lede fade" style="opacity:0;transform:translateY(14px)">A benchmark for agentic revenue recovery: four competing policies, a world frozen before any of them existed, a held-out seed suite evaluated exactly once, and an authority boundary a language model cannot cross.</p>
+    <div class="chips fade" style="opacity:0;transform:translateY(14px)">
+      <span class="chip">RAZORPAY BUILDATHON</span><span class="chip">TRACK 03</span><span class="chip">46.1% RECOVERED, HELD OUT</span>
+    </div>
+  </div></div>
+  <div class="scrollcue">SCROLL</div>
+</section>
+
+<div class="marq"><div class="marq-in">
+  <span>FROZEN WORLD &nbsp;·&nbsp; <b>10 SEEDS</b> &nbsp;·&nbsp; FIVE HELD OUT &nbsp;·&nbsp; <b>80 TESTS</b> &nbsp;·&nbsp; APPEND-ONLY AUDIT &nbsp;·&nbsp; <b>13 GUARDRAILS</b> &nbsp;·&nbsp; ONE HOLDOUT RUN &nbsp;·&nbsp; <b>+₹50,997</b> &nbsp;·&nbsp;&nbsp;</span>
+  <span>FROZEN WORLD &nbsp;·&nbsp; <b>10 SEEDS</b> &nbsp;·&nbsp; FIVE HELD OUT &nbsp;·&nbsp; <b>80 TESTS</b> &nbsp;·&nbsp; APPEND-ONLY AUDIT &nbsp;·&nbsp; <b>13 GUARDRAILS</b> &nbsp;·&nbsp; ONE HOLDOUT RUN &nbsp;·&nbsp; <b>+₹50,997</b> &nbsp;·&nbsp;&nbsp;</span>
+</div></div>
+
+<section id="problem"><div class="wrap"><div class="sec">
+  <div class="rail"><div class="kicker">01</div><div class="railname">The problem</div>
+    <div class="railmeta">revenue leaks<br>across four<br>failure classes</div></div>
+  <div>
+    <h2><span class="line"><span>Revenue does not vanish.</span></span><span class="line"><span>It leaks.</span></span></h2>
+    <p class="fade" style="opacity:0;transform:translateY(14px)">A payment degrades. A checkout is abandoned. A subscription mandate fails. An invoice goes quietly overdue. None of it is dramatic, and all of it adds up.</p>
+    <p class="fade" style="opacity:0;transform:translateY(14px)">The naive instinct is to retry. But retrying a hard decline is wasted; an insufficient-funds failure recovers only after the customer has been paid; an abandoned cart is not a payment problem at all. The same error code can mean several different things.</p>
+    <div class="grid2 fade" style="opacity:0;transform:translateY(14px);margin-top:44px">
+      <div><h3>Razorpay already ships the agents</h3>
+        <p class="small">Agent Studio launched in March 2026 on the Claude Agent SDK, with a Subscription Recovery Agent and a Cart Abandonment Recovery Agent, and published principles for how they behave — merchant scope, review-first mode, a kill switch, no invented discounts, no dark patterns.</p></div>
+      <div><h3>Nobody publishes the measurement</h3>
+        <p class="small">Building another agent would rebuild something that exists, less well, in two weeks. What does not exist publicly is how you would <strong>prove</strong> one recovery policy beats another rather than got a lucky simulation. That is the gap.</p></div>
+    </div>
+  </div>
+</div></div></section>
+
+<section id="approach"><div class="wrap"><div class="sec">
+  <div class="rail"><div class="kicker">02</div><div class="railname">Approach</div>
+    <div class="railmeta">four layers<br>13 guardrails<br>4 outcomes</div></div>
+  <div>
+    <h2><span class="line"><span>Four layers. One holds</span></span><span class="line"><span>all the authority.</span></span></h2>
+    <p class="fade" style="opacity:0;transform:translateY(14px)">A language model inside a money-moving loop is the central risk, and "we prompted it carefully" is not an answer to it. So the boundary is structural: a recommendation can never become an executable action directly.</p>
+    <div class="chain fade" style="opacity:0;transform:translateY(14px)">
+      <div class="node"><b>Diagnosis</b>Closed enums, bounded confidence, sanitised text. Describes the world; never acts on it.</div>
+      <div class="node"><b>Recommendation</b>Scores candidate interventions, proposes a request. Still carries no authority.</div>
+      <div class="node gateway"><b>Policy engine</b>13 guardrails, four outcomes:<br><span class="yes">authorized</span> · <span class="yes">review required</span><br><span class="no">blocked</span> · <span class="no">abstained</span></div>
+      <div class="node"><b>Execution</b>Accepts a minted action and nothing else.</div>
+    </div>
+    <div class="grid3 fade" style="opacity:0;transform:translateY(14px);margin-top:50px">
+      <div class="fact"><div class="n num"><span data-count="4">0</span></div><div class="l">competing policies, one an ablation arm isolating the model's contribution</div></div>
+      <div class="fact"><div class="n num"><span data-count="13">0</span></div><div class="l">deterministic guardrails, ten mapped to Razorpay's published principles</div></div>
+      <div class="fact"><div class="n num"><span data-count="80">0</span></div><div class="l">tests, including property-based guardrails and a syntax-tree import boundary</div></div>
+    </div>
+  </div>
+</div></div></section>
+
+<section id="authority"><div class="wrap"><div class="sec">
+  <div class="rail"><div class="kicker">03</div><div class="railname">Authority</div>
+    <div class="railmeta">one token<br>one minting path<br>zero exceptions</div></div>
+  <div>
+    <h2><span class="line"><span>The model cannot</span></span><span class="line"><span>manufacture authority.</span></span></h2>
+    <p class="fade" style="opacity:0;transform:translateY(14px)">Only the policy engine holds the token that mints an executable action. The executor accepts nothing else. Enforced by tests, not by a diagram.</p>
+    <pre class="fade" style="opacity:0;transform:translateY(14px)"><span class="c"># execution/types.py</span>
+_POLICY_TOKEN = object()
+
+def _mint(token, **kwargs):
+    <span class="k">if</span> token <span class="k">is not</span> _POLICY_TOKEN:
+        <span class="k">raise</span> <span class="r">AuthorityError</span>(
+            <span class="m">"AuthorizedAction may only be constructed by the policy engine"</span>)
+    <span class="k">return</span> AuthorizedAction(**kwargs)</pre>
+    <div class="note fade" style="opacity:0;transform:translateY(14px)">
+      <p class="small" style="margin:0"><strong>The honest limit.</strong> This bounds what the model may <em>do</em>, not how well it reasons. A wrong diagnosis cannot exceed its permissions, but it can still spend a permitted retry on a payment that was never recoverable. That cost is measured, not explained away.</p>
+    </div>
+    <div class="blocks fade" style="opacity:0;transform:translateY(14px)">
+      <div class="block"><div class="n num"><span data-count="7093">0</span></div><div class="l">QUIET HOURS</div></div>
+      <div class="block"><div class="n num"><span data-count="1273">0</span></div><div class="l">CONTACT CAP</div></div>
+      <div class="block"><div class="n num"><span data-count="635">0</span></div><div class="l">COOLDOWN</div></div>
+      <div class="block"><div class="n num good">0</div><div class="l">UNAUTHORIZED</div></div>
+    </div>
+  </div>
+</div></div></section>
+
+<section id="data"><div class="wrap"><div class="sec">
+  <div class="rail"><div class="kicker">04</div><div class="railname">Data</div>
+    <div class="railmeta">frozen world<br>dev 11–15<br>holdout 101–105</div></div>
+  <div>
+    <h2><span class="line"><span>A world nobody</span></span><span class="line"><span>could tune against.</span></span></h2>
+    <p class="fade" style="opacity:0;transform:translateY(14px)">Outcome probabilities were authored before any policy existed, then frozen. Policy code is forbidden from importing them, checked at the syntax-tree level on every test run. Events are generated on Razorpay's own error axes — <code>source</code>, <code>step</code>, <code>reason</code>.</p>
+    <div class="grid2 fade" style="opacity:0;transform:translateY(14px);margin-top:36px;align-items:start">
+      <div><h3>Ambiguity is the point</h3>
+        <p class="small">The error slug deliberately does not determine the true cause. Without that, diagnosis would be a lookup and a language model would have nothing to contribute.</p>
+        <pre><span class="c"># world/params.py — frozen</span>
+<span class="m">"payment_failed"</span>: {
+  ISSUER_SOFT_DECLINE: 0.40,
+  INSUFFICIENT_FUNDS:  0.30,
+  ISSUER_HARD_DECLINE: 0.20,
+  TRANSIENT_GATEWAY:   0.10,
+}</pre></div>
+      <div><h3>Identical worlds for every arm</h3>
+        <p class="small">Draws are keyed on <code>(seed, event_id, attempt_no, action)</code> with blake2b, never a shared stream. Results are bit-identical across Linux and Windows.</p>
+        <pre>p = base_recoverability[cause]
+  × action_fit[cause][action]
+  × attempt_decay(attempt_no)
+  × timing_multiplier(hours)
+  × responsiveness  <span class="c"># hidden</span></pre></div>
+    </div>
+    <div class="fade" style="opacity:0;transform:translateY(14px);margin-top:44px">
+      <h3>The audit database</h3>
+      <p class="small dim">Every decision is one row. Append-only is enforced by the database itself.</p>
+      <pre><span class="k">CREATE TRIGGER</span> audit_no_update <span class="k">BEFORE UPDATE ON</span> audit
+<span class="k">BEGIN</span> <span class="k">SELECT</span> <span class="r">RAISE(ABORT, 'audit log is append-only')</span>; <span class="k">END</span>;</pre>
+    </div>
+  </div>
+</div></div></section>
+
+<section id="results">
+  <div class="pinwrap"><div class="wrap"><div class="sec">
+    <div class="rail"><div class="kicker">05</div><div class="railname">Results</div>
+      <div class="railmeta">5 seeds × 1,000<br>evaluated once<br>46.1% recovered</div></div>
+    <div>
+      <h2 style="margin-bottom:26px">46.1% of at-risk value,<br>on seeds it had never seen.</h2>
+      <div class="armrow" data-pct="42.4">
+        <div class="armtop"><div class="armname">A · naive fixed retry<small>Retry the same method at +1h, +6h, +24h.</small></div>
+          <div class="armval num">₹618,823 <span class="ci">± 52,251</span></div></div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="armfoot"><span>19.5% RECOVERED</span><span>0 CONTACTS</span><span>22.7% ABSTAINED</span></div>
+      </div>
+      <div class="armrow" data-pct="74.9">
+        <div class="armtop"><div class="armname">B · deterministic rule ladder<small>Diagnose from the error code, follow a fixed path.</small></div>
+          <div class="armval num">₹1,094,474 <span class="ci">± 60,454</span></div></div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="armfoot"><span>34.5% RECOVERED</span><span>2.25 CONTACTS/REC</span><span>13.1% ABSTAINED</span></div>
+      </div>
+      <div class="armrow" data-pct="96.5">
+        <div class="armtop"><div class="armname">B+ · scoring, no model<small>The ablation arm. Identical maths, deterministic diagnosis.</small></div>
+          <div class="armval num">₹1,409,786 <span class="ci">± 52,869</span></div></div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="armfoot"><span>44.5% RECOVERED</span><span>2.10 CONTACTS/REC</span><span>11.4% ABSTAINED</span></div>
+      </div>
+      <div class="armrow is-c" data-pct="100">
+        <div class="armtop"><div class="armname">C · scoring + model diagnosis<small>The same policy. Only the diagnosis differs.</small></div>
+          <div class="armval num">₹1,460,783 <span class="ci">± 33,384</span></div></div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="armfoot"><span>46.1% RECOVERED</span><span>2.03 CONTACTS/REC</span><span>11.7% ABSTAINED</span></div>
+      </div>
+    </div>
+  </div></div></div>
+</section>
+
+<section><div class="wrap"><div class="sec">
+  <div class="rail"><div class="kicker">05b</div><div class="railname">The ablation</div>
+    <div class="railmeta">C minus B+<br>paired test<br>held out</div></div>
+  <div>
+    <h2><span class="line"><span>What the model</span></span><span class="line"><span>actually contributed.</span></span></h2>
+    <p class="fade" style="opacity:0;transform:translateY(14px)">B+ and C are the same class in the same file, running the same scoring, scheduling and abstention logic against the same seeds. Only the diagnosis differs.</p>
+    <div class="bigdelta fade" style="opacity:0;transform:translateY(14px)">+₹<span data-count="50997">0</span></div>
+    <p class="small dim fade" style="opacity:0;transform:translateY(14px);margin-top:14px">THE MODEL'S ISOLATED CONTRIBUTION · HELD-OUT SUITE</p>
+
+    <div class="chartwrap fade" style="opacity:0;transform:translateY(14px);margin-top:44px">
+      <div class="chart-h">Same policies. Seeds they had never seen.</div>
+      <svg viewBox="0 0 640 300" class="chart" role="img" aria-label="Development versus holdout recovery by policy">
+        <g class="gridlines">
+          <line x1="60" y1="30"  x2="620" y2="30"/><line x1="60" y1="90"  x2="620" y2="90"/>
+          <line x1="60" y1="150" x2="620" y2="150"/><line x1="60" y1="210" x2="620" y2="210"/>
+          <line x1="60" y1="252" x2="620" y2="252"/>
+        </g>
+        <text x="52" y="34" class="axislabel" text-anchor="end">1.5M</text>
+        <text x="52" y="154" class="axislabel" text-anchor="end">750K</text>
+        <text x="52" y="256" class="axislabel" text-anchor="end">0</text>
+
+        <!-- Bars are drawn at their FINAL geometry. Only a scaleY transform,
+             anchored to the axis, is animated -- never y/height directly,
+             which is what mis-drew the previous version. -->
+        <rect class="bar dev"  x="86"  y="159" width="26" height="93" />
+        <rect class="bar hold" x="116" y="158" width="26" height="94" />
+        <text x="115" y="272" class="axislabel" text-anchor="middle">A</text>
+
+        <rect class="bar dev"  x="216" y="82"  width="26" height="170"/>
+        <rect class="bar hold" x="246" y="86"  width="26" height="166"/>
+        <text x="245" y="272" class="axislabel" text-anchor="middle">B</text>
+
+        <rect class="bar dev"  x="346" y="36"  width="26" height="216"/>
+        <rect class="bar hold" x="376" y="38"  width="26" height="214"/>
+        <text x="375" y="272" class="axislabel" text-anchor="middle">B+</text>
+
+        <rect class="bar dev"  x="476" y="32"  width="26" height="220"/>
+        <rect class="bar hold" x="506" y="30"  width="26" height="222"/>
+        <text x="505" y="272" class="axislabel" text-anchor="middle">C</text>
+      </svg>
+      <div class="chart-legend">
+        <span><i class="lg-devbar"></i>development seeds</span>
+        <span><i class="lg-holdbar"></i>held-out seeds</span>
+      </div>
+      <p class="small dim" style="margin-top:22px">Arm C moved from ₹1,445,945 in development to ₹1,460,783 held out — the ordering of all four policies held exactly, on data none of them had tuned against.</p>
+    </div>
+
+    <div class="scroller fade" style="opacity:0;transform:translateY(14px);margin-top:34px"><table>
+      <tr><th>Measure</th><th class="n">Value</th></tr>
+      <tr><td>Development seeds</td><td class="n">+₹24,522</td></tr>
+      <tr><td>Paired 95% CI, development</td><td class="n">±₹18,918</td></tr>
+      <tr class="hi"><td>Held-out seeds</td><td class="n">+₹50,997</td></tr>
+      <tr><td>Arm C interval, dev → holdout</td><td class="n">±89,165 → ±33,384</td></tr>
+    </table></div>
+
+    <div class="chartwrap fade" style="opacity:0;transform:translateY(14px);margin-top:52px">
+      <h3>Where the model's edge actually comes from</h3>
+      <p class="small dim">Arm C, development seeds, by failure reason. The gap over B+ is not spread evenly.</p>
+      <svg viewBox="0 0 640 400" class="chart chart-h2" role="img" aria-label="Recovered rupees by failure reason, arm C">
+        <g class="hbars">
+          <text x="0" y="14" class="rowlabel">payment_failed</text>
+          <rect class="hbar amb" x="190" y="4" width="330.0" height="16"/>
+          <text x="534" y="14" class="rowval" text-anchor="start">₹1,533,513</text>
+
+          <text x="0" y="50" class="rowlabel">gateway_timeout</text>
+          <rect class="hbar" x="190" y="40" width="282.8" height="16"/>
+          <text x="534" y="50" class="rowval" text-anchor="start">₹1,314,052</text>
+
+          <text x="0" y="86" class="rowlabel">insufficient_funds</text>
+          <rect class="hbar" x="190" y="76" width="228.7" height="16"/>
+          <text x="534" y="86" class="rowval" text-anchor="start">₹1,061,969</text>
+
+          <text x="0" y="122" class="rowlabel">invalid_otp</text>
+          <rect class="hbar" x="190" y="112" width="153.4" height="16"/>
+          <text x="534" y="122" class="rowval" text-anchor="start">₹712,747</text>
+
+          <text x="0" y="158" class="rowlabel">gateway_technical_error</text>
+          <rect class="hbar" x="190" y="148" width="143.9" height="16"/>
+          <text x="534" y="158" class="rowval" text-anchor="start">₹669,113</text>
+
+          <text x="0" y="194" class="rowlabel">checkout_abandoned</text>
+          <rect class="hbar" x="190" y="184" width="117.2" height="16"/>
+          <text x="534" y="194" class="rowval" text-anchor="start">₹544,310</text>
+
+          <text x="0" y="230" class="rowlabel">payment_timeout</text>
+          <rect class="hbar" x="190" y="220" width="97.3" height="16"/>
+          <text x="534" y="230" class="rowval" text-anchor="start">₹451,965</text>
+
+          <text x="0" y="266" class="rowlabel">card_declined</text>
+          <rect class="hbar" x="190" y="256" width="73.3" height="16"/>
+          <text x="534" y="266" class="rowval" text-anchor="start">₹340,718</text>
+
+          <text x="0" y="302" class="rowlabel">invoice_overdue</text>
+          <rect class="hbar" x="190" y="292" width="65.7" height="16"/>
+          <text x="534" y="302" class="rowval" text-anchor="start">₹305,303</text>
+
+          <text x="0" y="338" class="rowlabel">method_unsupported</text>
+          <rect class="hbar" x="190" y="328" width="56.1" height="16"/>
+          <text x="534" y="338" class="rowval" text-anchor="start">₹261,356</text>
+
+          <text x="0" y="374" class="rowlabel">mandate_revoked</text>
+          <rect class="hbar" x="190" y="364" width="7.6" height="16"/>
+          <text x="534" y="374" class="rowval" text-anchor="start">₹34,681</text>
+        </g>
+      </svg>
+      <p class="small" style="margin-top:14px"><code>payment_failed</code> — highlighted — is the one error code deliberately built to be ambiguous: the rules map can only guess its true cause at 40% confidence. That single reason accounts for almost all of arm C's advantage over B+. Everywhere the answer was already obvious, the two arms are within a rounding error of each other.</p>
+    </div>
+    <div class="fade" style="opacity:0;transform:translateY(14px);margin-top:52px">
+      <h3>The test that nearly killed this result</h3>
+      <p>The first version declared the model had earned its place whenever its mean beat B+. On development data the gap was ₹24,522 while each arm's own interval exceeded ₹85,000 — by that reading it was indistinguishable from noise, and the report would have been overclaiming.</p>
+      <p>The correct comparison is the <strong>paired per-seed difference</strong>, since both arms run on identical seeds. Common random numbers cancel the shared variance, and the paired interval came out at ₹18,918 — narrower than the effect. It survived, then strengthened out of sample.</p>
+    </div>
+    <div class="fade" style="opacity:0;transform:translateY(14px);margin-top:52px">
+      <h3>A decision, end to end</h3>
+      <p class="small dim">An overdue invoice worth ₹3,044. Expected value falls until it no longer justifies the spend.</p>
+      <div class="ledger">
+        <div class="ledger-bar"><span>evt_11_000006 · invoice_overdue · ₹3,044</span><span>C_vanta</span></div>
+        <div class="ledger-body">
+          <div class="row"><span class="t">18:57</span><span class="a">schedule_retry</span><span class="v">p=0.068 &nbsp;EV ₹207.02</span></div>
+          <div class="row"><span class="t">18:58</span><span class="a">schedule_retry</span><span class="v">p=0.041 &nbsp;EV ₹124.20</span></div>
+          <div class="row"><span class="t">18:59</span><span class="a">schedule_retry</span><span class="v">p=0.024 &nbsp;EV ₹72.44</span></div>
+          <div class="row"><span class="t">19:00</span><span class="a">schedule_retry</span><span class="v">p=0.014 &nbsp;EV ₹41.39</span></div>
+          <div class="row no"><span class="t">19:01</span><span class="a">abstain</span><span class="v">best EV ≤ 0</span></div>
+          <div class="verdict">Not worth the spend. No action taken, and the decision is on the record.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div></section>
+
+<section id="proof"><div class="wrap"><div class="sec">
+  <div class="rail"><div class="kicker">06</div><div class="railname">Proof</div>
+    <div class="railmeta">generated report<br>no API key<br>one command</div></div>
+  <div>
+    <h2><span class="line"><span>The generated report,</span></span><span class="line"><span>unedited.</span></span></h2>
+    <p class="fade" style="opacity:0;transform:translateY(14px)">Every figure above comes from this file, which the evaluation run writes itself. It ships with the repository and anyone can regenerate it with one command and no API key.</p>
+    <pre class="fade" style="opacity:0;transform:translateY(14px)"><span class="k">$</span> vanta evaluate --suite holdout --no-llm</pre>
+    <div class="framewrap fade" style="opacity:0;transform:translateY(14px)">
+      <div class="framebar"><span>results/holdout/report.html</span><span>GENERATED BY THE EVALUATION RUN</span></div>
+      <iframe src="report.html" title="VANTA generated evaluation report" loading="lazy"></iframe>
+    </div>
+    <div class="cta fade" style="opacity:0;transform:translateY(14px)">
+      <a class="btn" href="report.html" target="_blank" rel="noopener">Open full screen</a>
+      <a class="btn primary" href="https://github.com/" id="repo1">Read the repository</a>
+    </div>
+  </div>
+</div></div></section>
+
+<section id="honesty"><div class="wrap"><div class="sec">
+  <div class="rail"><div class="kicker">07</div><div class="railname">Honesty</div>
+    <div class="railmeta">what it does<br>not prove</div></div>
+  <div>
+    <h2><span class="line"><span>What this</span></span><span class="line"><span>does not prove.</span></span></h2>
+    <ul class="fade" style="opacity:0;transform:translateY(14px)">
+      <li><strong>The world is synthetic.</strong> Outcome probabilities were authored, not observed. Each is marked <span class="mono">sourced</span> or <span class="mono">assumed</span>, and every assumed value is a sensitivity axis.</li>
+      <li><strong>The same author wrote the world and the agents.</strong> The mitigation is structural rather than a promise — policy code cannot import the world — but it is a mitigation, not an elimination.</li>
+      <li><strong>One holdout run.</strong> By design. Had the numbers disappointed, they would still be the numbers on this page.</li>
+      <li><strong>Five seeds is a small sample.</strong> The paired test is what makes an effect this size detectable at all.</li>
+      <li><strong>Nothing is trained, deliberately.</strong> The only data comes from the frozen world, so fitting a model to it would mean learning the answer key.</li>
+    </ul>
+    <div class="warnbox fade" style="opacity:0;transform:translateY(14px)">
+      <p class="small" style="margin:0">Unmodelled: churn as a downstream cost of over-contacting, seasonality, issuer policy drift, any correlation between payment size and recoverability. Each would likely narrow the gap between arms, so this spread is an upper bound rather than a forecast.</p>
+    </div>
+    <div class="cta fade" style="opacity:0;transform:translateY(14px)">
+      <a class="btn primary" href="https://github.com/" id="repo2">Read the repository</a>
+      <a class="btn" href="#top">Back to top</a>
+    </div>
+  </div>
+</div></div></section>
+</main>
+
+<footer><div class="wrap">
+  HELD-OUT SUITE · SEEDS 101–105 · 1,000 EVENTS PER SEED · DIAGNOSIS CACHE BUILT ONCE FROM openai/gpt-oss-120b VIA GROQ · REPLAYABLE WITH NO API KEY · 80 TESTS
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
