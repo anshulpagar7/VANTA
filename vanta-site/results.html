@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Results — VANTA</title>
+<meta name="description" content="Held-out results across four policies, and a paired test of what the language model actually contributed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="top"><div class="wrap"><a class="brand" href="index.html">VANTA</a><div class="links"><a href="index.html">Overview</a><a href="problem.html">The problem</a><a href="approach.html">Approach</a><a href="data.html">Data</a><a href="results.html" aria-current="page">Results</a><a href="honesty.html">Honesty</a></div></div></nav>
+<div class="wrap phead">
+  <div class="kicker">04 — Results</div>
+  <h1>46.1% of at-risk value, on seeds it had never seen.</h1>
+  <p class="lede">Five held-out seeds, 1,000 events each, evaluated once after the policies were frozen and committed.</p>
+</div>
+
+<section>
+  <div class="wrap reveal">
+    <h2>The four arms</h2>
+    <div class="arms">
+      <div class="arm" data-pct="42.3">
+        <div class="arm-top">
+          <div class="arm-name">A · naive fixed retry<small>Retry the same method at +1h, +6h, +24h. No diagnosis, no targeting.</small></div>
+          <div class="arm-val num">&#8377;618,823 <span class="ci">&plusmn; 52,251</span></div>
+        </div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="arm-foot"><span>19.5% recovered</span><span>0 contacts</span><span>22.7% abstained</span></div>
+      </div>
+      <div class="arm" data-pct="74.9">
+        <div class="arm-top">
+          <div class="arm-name">B · deterministic rule ladder<small>Diagnose from the error code, then follow a fixed escalation path.</small></div>
+          <div class="arm-val num">&#8377;1,094,474 <span class="ci">&plusmn; 60,454</span></div>
+        </div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="arm-foot"><span>34.5% recovered</span><span>2.25 contacts / recovery</span><span>13.1% abstained</span></div>
+      </div>
+      <div class="arm" data-pct="96.5">
+        <div class="arm-top">
+          <div class="arm-name">B+ · expected-value scoring, no model<small>The ablation arm. Identical maths to arm C, deterministic diagnosis.</small></div>
+          <div class="arm-val num">&#8377;1,409,786 <span class="ci">&plusmn; 52,869</span></div>
+        </div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="arm-foot"><span>44.5% recovered</span><span>2.10 contacts / recovery</span><span>11.4% abstained</span></div>
+      </div>
+      <div class="arm is-c" data-pct="100">
+        <div class="arm-top">
+          <div class="arm-name">C · expected-value scoring + model diagnosis<small>The same policy. Only the source of the diagnosis differs.</small></div>
+          <div class="arm-val num">&#8377;1,460,783 <span class="ci">&plusmn; 33,384</span></div>
+        </div>
+        <div class="track"><div class="fill"></div></div>
+        <div class="arm-foot"><span>46.1% recovered</span><span>2.03 contacts / recovery</span><span>11.7% abstained</span></div>
+      </div>
+    </div>
+    <p class="small dim" style="margin-top:22px">Arm C recovers more money using fewer customer contacts per recovery than any arm below it. Abstention is a first-class outcome: declining to spend attention where the expected return is low is the system working, not failing.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="grid2">
+      <div class="reveal">
+        <h2>What the model actually contributed</h2>
+        <p>B+ and C run the same candidate generation, the same scoring, the same guardrail-aware scheduling and the same abstention rule, against the same seeds. Only the diagnosis differs, so the gap between them is the model's isolated contribution.</p>
+        <div class="num" style="font-size:clamp(38px,5.5vw,58px);color:var(--gate);line-height:1;letter-spacing:-.03em">+&#8377;50,997</div>
+        <div class="mono dim" style="margin-top:10px;font-size:13px">held-out suite</div>
+      </div>
+      <div class="reveal">
+        <div class="scroller">
+          <table>
+            <tr><th>Measure</th><th class="n">Value</th></tr>
+            <tr><td>Development seeds</td><td class="n">+&#8377;24,522</td></tr>
+            <tr><td>Paired 95% CI, development</td><td class="n">&plusmn;&#8377;18,918</td></tr>
+            <tr class="hi"><td>Held-out seeds</td><td class="n">+&#8377;50,997</td></tr>
+            <tr><td>Arm C interval, dev &rarr; holdout</td><td class="n">&plusmn;89,165 &rarr; &plusmn;33,384</td></tr>
+          </table>
+        </div>
+        <p class="small" style="margin-top:20px">The effect roughly doubled on seeds the policies had never seen, and arm C's interval tightened rather than widened.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>The test that nearly killed this result</h2>
+    <p>The first version of the report declared the model had earned its place whenever its mean beat B+. On development data the gap was &#8377;24,522 while each arm's own interval was over &#8377;85,000 — by that reading it was indistinguishable from noise, and the report would have been overclaiming.</p>
+    <p>The correct comparison is the <strong>paired per-seed difference</strong>, because both arms run on identical seeds. Common random numbers cancel most of the shared variance, and the paired interval came out at &#8377;18,918 — narrower than the effect. It survived, then strengthened out of sample.</p>
+    <div class="note">
+      <p class="small" style="margin:0">Two tests now encode the distinction: a consistent small edge is significant, and a noisy edge the size of its own mean is not. The second one exists specifically to catch the mistake the first version made.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Where the money comes from</h2>
+    <p class="small dim">Arm C, development seeds. The model's advantage is not spread evenly — it concentrates on <code>payment_failed</code>, the one slug built to be genuinely ambiguous, where the rules map can only guess with 40% confidence. On unambiguous slugs the two arms are near-identical.</p>
+    <div class="scroller">
+      <table>
+        <tr><th>Failure reason</th><th class="n">&#8377; recovered</th><th class="n">Decisions</th><th class="n">Abstentions</th></tr>
+        <tr class="hi"><td class="mono">payment_failed</td><td class="n">1,533,513</td><td class="n">4,083</td><td class="n">331</td></tr>
+        <tr><td class="mono">gateway_timeout</td><td class="n">1,314,052</td><td class="n">997</td><td class="n">41</td></tr>
+        <tr><td class="mono">insufficient_funds</td><td class="n">1,061,969</td><td class="n">1,944</td><td class="n">115</td></tr>
+        <tr><td class="mono">invalid_otp</td><td class="n">712,747</td><td class="n">1,376</td><td class="n">187</td></tr>
+        <tr><td class="mono">gateway_technical_error</td><td class="n">669,113</td><td class="n">542</td><td class="n">19</td></tr>
+        <tr><td class="mono">checkout_abandoned</td><td class="n">544,310</td><td class="n">3,047</td><td class="n">561</td></tr>
+        <tr><td class="mono">payment_timeout</td><td class="n">451,965</td><td class="n">1,344</td><td class="n">227</td></tr>
+        <tr><td class="mono">card_declined</td><td class="n">340,718</td><td class="n">2,044</td><td class="n">172</td></tr>
+        <tr><td class="mono">invoice_overdue</td><td class="n">305,303</td><td class="n">1,162</td><td class="n">208</td></tr>
+        <tr><td class="mono">method_unsupported</td><td class="n">261,356</td><td class="n">553</td><td class="n">34</td></tr>
+        <tr><td class="mono">mandate_revoked</td><td class="n">34,681</td><td class="n">1,158</td><td class="n">226</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>A decision, end to end</h2>
+    <p class="small dim">An overdue invoice worth &#8377;3,044. The expected value of each further attempt falls until it no longer justifies the spend, and the system stops.</p>
+    <div class="ledger" style="max-width:640px">
+      <div class="ledger-bar"><span>audit trail &middot; evt_11_000006 &middot; invoice_overdue &middot; &#8377;3,044</span><span>C_vanta</span></div>
+      <div class="ledger-body">
+        <div class="row"><span class="t">18:57</span><span class="a">schedule_retry</span><span class="v">p=0.068 &nbsp;EV &#8377;207.02</span></div>
+        <div class="row"><span class="t">18:58</span><span class="a">schedule_retry</span><span class="v">p=0.041 &nbsp;EV &#8377;124.20</span></div>
+        <div class="row"><span class="t">18:59</span><span class="a">schedule_retry</span><span class="v">p=0.024 &nbsp;EV &#8377;72.44</span></div>
+        <div class="row"><span class="t">19:00</span><span class="a">schedule_retry</span><span class="v">p=0.014 &nbsp;EV &#8377;41.39</span></div>
+        <div class="row no"><span class="t">19:01</span><span class="a">abstain</span><span class="v">best EV &le; 0</span></div>
+        <div class="verdict">Not worth the spend. No action taken, and the decision is on the record.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Guardrails in action</h2>
+    <p class="small dim">Refusals from arm B, which schedules without regard for when it is allowed to act. The scoring arms plan around the constraints and are blocked zero times — the guardrails were never the cost. Ignoring them was.</p>
+    <div class="blocks">
+      <div class="block"><div class="n num">7,093</div><div class="l">quiet hours</div></div>
+      <div class="block"><div class="n num">1,273</div><div class="l">contact cap reached</div></div>
+      <div class="block"><div class="n num">635</div><div class="l">cooldown active</div></div>
+      <div class="block"><div class="n num good">0</div><div class="l">unauthorized actions</div></div>
+    </div>
+  </div>
+</section>
+<div class="wrap"><div class="pager"><a href="data.html"><span class="lbl">Previous</span>Data</a><a href="honesty.html" style="text-align:right"><span class="lbl">Next</span>Honesty</a></div></div><footer><div class="wrap">Held-out suite &middot; seeds 101&ndash;105 &middot; 1,000 events per seed &middot; diagnosis cache built once from openai/gpt-oss-120b via Groq &middot; replayable with no API key &middot; 80 tests</div></footer><script src="assets/site.js"></script>
+</body>
+</html>
