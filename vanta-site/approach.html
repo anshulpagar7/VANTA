@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Approach — VANTA</title>
+<meta name="description" content="Four layers, four policies, and an authority boundary enforced by tests rather than convention.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="top"><div class="wrap"><a class="brand" href="index.html">VANTA</a><div class="links"><a href="index.html">Overview</a><a href="problem.html">The problem</a><a href="approach.html" aria-current="page">Approach</a><a href="data.html">Data</a><a href="results.html">Results</a><a href="honesty.html">Honesty</a></div></div></nav>
+<div class="wrap phead">
+  <div class="kicker">02 — Approach</div>
+  <h1>Separate intelligence from authority.</h1>
+  <p class="lede">A language model in a money-moving loop is the central risk. "We prompted it carefully" is not an answer to that. The boundary has to be structural.</p>
+</div>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Four layers, four packages</h2>
+    <p>A recommendation can never become an executable action directly. It must pass through the policy engine, which is the only holder of the token that mints one. The executor accepts nothing else.</p>
+    <div class="chain">
+      <div class="node"><b>Diagnosis</b>Closed enums, confidence bounded to [0,1], sanitised free text. Describes the world; never acts on it.</div>
+      <div class="node"><b>Recommendation</b>Scores candidate interventions and proposes an authorization request. Still carries no authority.</div>
+      <div class="node gateway"><b>Policy engine</b>13 deterministic guardrails, then one of four outcomes:<br><span class="yes">authorized</span> &middot; <span class="yes">review required</span><br><span class="no">blocked</span> &middot; <span class="no">abstained</span></div>
+      <div class="node"><b>Execution</b>Accepts a minted action and nothing else. Simulated for the benchmark; Razorpay test mode for the demo.</div>
+    </div>
+    <p class="small dim">Abstention and review-required are outcomes, not failures. Razorpay's own published model holds sensitive actions for merchant approval, so VANTA mirrors that rather than inventing a parallel vocabulary.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>The boundary is a test, not a diagram</h2>
+    <pre><span class="c"># execution/types.py — only the policy engine holds this</span>
+_POLICY_TOKEN = object()
+
+def _mint(token, **kwargs):
+    <span class="k">if</span> token <span class="k">is not</span> _POLICY_TOKEN:
+        <span class="k">raise</span> <span class="r">AuthorityError</span>(
+            <span class="m">"AuthorizedAction may only be constructed by the policy engine"</span>)
+    <span class="k">return</span> AuthorizedAction(**kwargs)</pre>
+    <p class="small">Four tests hold this in place: a token-guarded constructor, an executor that rejects anything unminted, a syntax-tree scan proving the diagnosis layer never imports the execution layer, and property-based tests asserting over hundreds of generated customer states that a blocked request never produces an action.</p>
+    <div class="note">
+      <p class="small" style="margin:0"><strong>The honest limit.</strong> This bounds what the model may <em>do</em>, not how well it reasons. A wrong diagnosis cannot exceed its permissions, but it can still spend a permitted retry on a payment that was never recoverable. That cost is real and it is measured.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Guardrails, mapped to Razorpay's published principles</h2>
+    <div class="scroller">
+      <table>
+        <tr><th>Published principle</th><th>Implementation in VANTA</th></tr>
+        <tr><td>Merchant defines permitted actions</td><td class="mono">rule_agent_scope</td></tr>
+        <tr><td>Review-first mode; irreversible actions never auto-approved</td><td class="mono">Outcome.REVIEW_REQUIRED</td></tr>
+        <tr><td>Agent can be turned off, one tap, immediate</td><td class="mono">rule_agent_enabled</td></tr>
+        <tr><td>Agents do not invent discounts</td><td class="mono">rule_offer_within_merchant_ceiling</td></tr>
+        <tr><td>No escalation loop with bigger offers</td><td class="mono">rule_no_escalating_offers</td></tr>
+        <tr><td>No dark patterns (India's 2023 guidelines)</td><td class="mono">rule_no_dark_patterns</td></tr>
+        <tr><td>Opt-out permanently suppressed</td><td class="mono">rule_opted_out</td></tr>
+        <tr><td>Amount validation against merchant configuration</td><td class="mono">rule_spend_cap</td></tr>
+      </table>
+    </div>
+    <p class="small dim">Three guardrails go beyond the published set: a per-episode attempt cap, quiet hours with a contact cooldown, and a promise-to-pay suppression window.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Four policies, and why the fourth one exists</h2>
+    <div class="scroller">
+      <table>
+        <tr><th>Arm</th><th>Diagnosis</th><th>Decision logic</th></tr>
+        <tr><td>A · naive</td><td>none</td><td>fixed retry at +1h, +6h, +24h</td></tr>
+        <tr><td>B · rule ladder</td><td>hand-written map from the error code</td><td>fixed escalation path per cause</td></tr>
+        <tr class="hi"><td>B+ · scoring, no model</td><td>hand-written map</td><td>expected-recovery-value scoring</td></tr>
+        <tr class="hi"><td>C · scoring + model</td><td>language model</td><td>expected-recovery-value scoring</td></tr>
+      </table>
+    </div>
+    <p><strong>B+ is the arm that makes the result meaningful.</strong> Without it, if C beat B you could not tell whether the win came from the language model or from the better decision arithmetic wrapped around it — and that is the first question a reviewer should ask. B+ and C are literally the same class in the same file, differing only in which function supplies the diagnosis.</p>
+    <p class="small dim">A test enforces exactly that: fill the diagnosis cache with the rules-based answers, run arm C, and it must match arm B+ to the rupee. If the two ever diverge for any other reason, the ablation stops meaning anything and the build fails.</p>
+  </div>
+</section>
+<div class="wrap"><div class="pager"><a href="problem.html"><span class="lbl">Previous</span>The problem</a><a href="data.html" style="text-align:right"><span class="lbl">Next</span>Data</a></div></div><footer><div class="wrap">Held-out suite &middot; seeds 101&ndash;105 &middot; 1,000 events per seed &middot; diagnosis cache built once from openai/gpt-oss-120b via Groq &middot; replayable with no API key &middot; 80 tests</div></footer><script src="assets/site.js"></script>
+</body>
+</html>
