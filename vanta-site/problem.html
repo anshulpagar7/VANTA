@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The problem — VANTA</title>
+<meta name="description" content="Why revenue recovery, why agents, and why the interesting part is measurement rather than the agent itself.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="top"><div class="wrap"><a class="brand" href="index.html">VANTA</a><div class="links"><a href="index.html">Overview</a><a href="problem.html" aria-current="page">The problem</a><a href="approach.html">Approach</a><a href="data.html">Data</a><a href="results.html">Results</a><a href="honesty.html">Honesty</a></div></div></nav>
+<div class="wrap phead">
+  <div class="kicker">01 — The problem</div>
+  <h1>Revenue does not vanish. It leaks.</h1>
+  <p class="lede">A payment degrades. A checkout is abandoned. A subscription mandate fails. An invoice goes quietly overdue. None of it is dramatic, and all of it adds up.</p>
+</div>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Recovery is a decision problem, not a retry problem</h2>
+    <p>The naive instinct is to retry. But retrying a hard decline is wasted; retrying an insufficient-funds failure works, though only after the customer has been paid; an abandoned cart is not a payment problem at all and needs a link, not a retry. The same failure code can mean several different things.</p>
+    <p>So the real question on every at-risk payment is not <em>can we retry</em> but <em>what is most likely wrong, what is the best intervention, when should it happen, and is it worth doing at all</em>. Get that last part wrong and you burn the customer's patience on money you were never going to recover.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Razorpay already builds the agents</h2>
+    <p>Agent Studio launched in March 2026, built on Anthropic's Claude Agent SDK, shipping with a Subscription Recovery Agent and a Cart Abandonment Recovery Agent. They also published their principles for how those agents behave: merchant-defined scope, review-first mode for sensitive actions, a one-tap kill switch, no invented discounts, no dark patterns, permanent suppression on opt-out.</p>
+    <div class="note">
+      <p class="small" style="margin:0">Building another recovery agent would be rebuilding something that already exists, less well, in two weeks.</p>
+    </div>
+    <p>What is <em>not</em> published — by Razorpay or anyone else — is how you would prove that one such agent is better than another. That is the gap VANTA fills.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Why proving it is genuinely hard</h2>
+    <p>You cannot A/B test a recovery agent against real customers casually: the treatment is money and attention, and the control group is customers you deliberately did not help. So you simulate. And the moment you simulate, you inherit a credibility problem that most projects quietly ignore:</p>
+    <ul>
+      <li><strong>You wrote the world and the agent.</strong> Nothing stops you from tuning reality until your agent wins, and nothing proves to a reader that you did not.</li>
+      <li><strong>You tuned against the same data you report.</strong> A number that has been optimised against is a measure of fit, not of performance.</li>
+      <li><strong>An agent that wins might have won for the wrong reason.</strong> If a language-model agent beats a rules agent, was it the model, or was it the better decision arithmetic around it?</li>
+    </ul>
+    <p>Each of those has a specific structural answer in this project, and they drove almost every design decision in it.</p>
+  </div>
+</section>
+<div class="wrap"><div class="pager"><a href="index.html"><span class="lbl">Previous</span>Overview</a><a href="approach.html" style="text-align:right"><span class="lbl">Next</span>Approach</a></div></div><footer><div class="wrap">Held-out suite &middot; seeds 101&ndash;105 &middot; 1,000 events per seed &middot; diagnosis cache built once from openai/gpt-oss-120b via Groq &middot; replayable with no API key &middot; 80 tests</div></footer><script src="assets/site.js"></script>
+</body>
+</html>
